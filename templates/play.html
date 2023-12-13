@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Stream</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #fff;
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        #video-container {
+            position: relative;
+            margin-top: 90px;
+        }
+
+        #count-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: red;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #count {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            top: 10px;
+            left: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: inline-block;
+            width: 50px;
+        }
+
+        .input-group input {
+            width: 100px;
+        }
+
+        #set-line-button {
+            margin-top: 10px;
+        }
+        #go-back-button {
+            font-family: 'Bebas Neue', sans-serif;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #go-back-button:hover {
+            background-color: #45a049;
+        }
+        #pauseButton {
+            font-family: 'Bebas Neue', sans-serif;
+            position: absolute;
+            top: 50px;
+            left: 95%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #pauseButton:hover {
+            background-color: darkred;
+        }
+
+        #resumeButton {
+            font-family: 'Bebas Neue', sans-serif;
+            position: absolute;
+            top: 90px;
+            left: 95%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #resumeButton:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reproducción del vídeo</h1>
+    <div id="video-container">
+        <img id="video-stream" src="{{ url_for('video_feed') }}" width="1020" height="500" />
+    </div>
+
+    <button id="go-back-button" onclick="goToIndexPage()">VOLVER A LA PÁGINA DE INICIO</button>
+    <button id="pauseButton" onclick="pause()">Pause</button>
+    <button id="resumeButton" onclick="resume()" disabled>Resume</button>
+
+    <span id="count-value"></span>
+
+    <script>
+
+        function pause() {
+            fetch('/pause')
+                .then(function(response) {
+                    if (response.ok) {
+                        // Deshabilitar el botón de pausa y habilitar el botón de reanudación
+                        document.getElementById('pauseButton').disabled = true;
+                        document.getElementById('resumeButton').disabled = false;
+                    }
+                });
+        }
+
+        function resume() {
+            fetch('/resume')
+                .then(function(response) {
+                    if (response.ok) {
+                        // Deshabilitar el botón de reanudación y habilitar el botón de pausa
+                        document.getElementById('pauseButton').disabled = false;
+                        document.getElementById('resumeButton').disabled = true;
+                    }
+                });
+        }
+
+
+    </script>
+    
+    <script>
+
+        function pause() {
+            fetch('/pause')
+                .then(function(response) {
+                    if (response.ok) {
+                        // Deshabilitar el botón de pausa y habilitar el botón de reanudación
+                        document.getElementById('pauseButton').disabled = true;
+                        document.getElementById('resumeButton').disabled = false;
+                    }
+                });
+        }
+
+        function resume() {
+            fetch('/resume')
+                .then(function(response) {
+                    if (response.ok) {
+                        // Deshabilitar el botón de reanudación y habilitar el botón de pausa
+                        document.getElementById('pauseButton').disabled = false;
+                        document.getElementById('resumeButton').disabled = true;
+                    }
+                });
+        }
+
+
+    </script>
+
+    <script>
+        function goToIndexPage() {
+            window.location.href = "/";
+        }
+    
+        function updateCount(count) {
+            const countValue = document.getElementById("count-value");
+            countValue.innerText = count;
+        }
+    </script>    
+
+    <script>
+       
+        function updateCount(count) {
+            const countValue = document.getElementById("count-value");
+            countValue.innerText = count;
+        }
+
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const countLine = document.getElementById("count-line");
+        const countValue = document.getElementById("count-value");
+
+        const x1Input = document.getElementById("x1-input");
+        const y1Input = document.getElementById("y1-input");
+        const x2Input = document.getElementById("x2-input");
+        const y2Input = document.getElementById("y2-input");
+
+        const setLineButton = document.getElementById("set-line-button");
+        const videoContainer = document.getElementById("video-container");
+        
+        let linePoints = [];
+
+        videoContainer.addEventListener("click", function(event) {
+            const { offsetX, offsetY } = event;
+
+            if (linePoints.length < 2) {
+            linePoints.push({ x: offsetX, y: offsetY });
+
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            dot.style.left = offsetX + "px";
+            dot.style.top = offsetY + "px";
+            videoContainer.appendChild(dot);
+
+            if (linePoints.length === 2) {
+                // Envía las coordenadas de la línea al servidor
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/set_line");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify({ x1: linePoints[0].x, y1: linePoints[0].y, x2: linePoints[1].x, y2: linePoints[1].y }));
+            }
+            }
+        });
+
+        function drawLine(x1, y1, x2, y2) {
+            countLine.style.width = x2 - x1 + "px";
+            countLine.style.height = "2px";
+            countLine.style.left = x1 + "px";
+            countLine.style.top = y1 + "px";
+        }
+
+        setLineButton.addEventListener("click", function() {
+            const x1 = parseInt(x1Input.value);
+            const y1 = parseInt(y1Input.value);
+            const x2 = parseInt(x2Input.value);
+            const y2 = parseInt(y2Input.value);
+
+            drawLine(x1, y1, x2, y2);
+
+            // Envía las coordenadas de la línea al servidor
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/set_line");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify({ x1: x1, y1: y1, x2: x2, y2: y2 }));
+        });
+
+        function updateCount(count) {
+            countValue.innerText = count;
+        }
+
+        // Establece la función para recibir actualizaciones del recuento desde el servidor
+        function receiveCountUpdate() {
+            const eventSource = new EventSource("/count_updates");
+            eventSource.onmessage = function(event) {
+                const count = parseInt(event.data);
+                updateCount(count);
+            };
+        }
+
+        // Llama a la función para recibir actualizaciones del recuento desde el servidor
+        receiveCountUpdate();
+    });
+</script>
+
+</body>
+</html>
